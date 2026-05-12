@@ -54,12 +54,17 @@ class Simpanan extends Model
 
     public function getJenisLabelAttribute(): string
     {
-        return match ($this->jenis) {
+        return static::jenisLabel($this->jenis);
+    }
+
+    public static function jenisLabel(string $jenis): string
+    {
+        return match ($jenis) {
             'pokok' => 'Simpanan Pokok',
             'wajib' => 'Simpanan Wajib',
             'sukarela' => 'Simpanan Sukarela',
             'bagi_hasil' => 'Bagi Hasil',
-            default => $this->jenis,
+            default => $jenis,
         };
     }
 }

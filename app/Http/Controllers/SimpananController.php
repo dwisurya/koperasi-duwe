@@ -59,6 +59,10 @@ class SimpananController extends Controller implements HasMiddleware
 
     public function update(Request $request, Simpanan $simpanan)
     {
+        if ($simpanan->jenis === 'pokok' && $request->jenis !== 'pokok') {
+            return back()->with('error', 'Tidak bisa mengubah jenis Simpanan Pokok.');
+        }
+
         $validated = $request->validate([
             'anggota_id' => 'required|exists:anggotas,id',
             'jenis' => 'required|in:pokok,wajib,sukarela,bagi_hasil',
@@ -75,6 +79,10 @@ class SimpananController extends Controller implements HasMiddleware
 
     public function destroy(Simpanan $simpanan)
     {
+        if ($simpanan->jenis === 'pokok') {
+            return back()->with('error', 'Simpanan Pokok tidak bisa dihapus selama anggota masih aktif.');
+        }
+
         $simpanan->delete();
 
         return redirect()->route('admin.simpanan.index')->with('success', 'Simpanan deleted successfully.');

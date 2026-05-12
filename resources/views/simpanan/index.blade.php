@@ -46,10 +46,14 @@
                                     <a href="{{ route('admin.simpanan.edit', $s) }}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
                                 @endcan
                                 @can('simpanan-delete')
-                                    <form action="{{ route('admin.simpanan.destroy', $s) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete simpanan?')">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                    </form>
+                                    @if($s->jenis !== 'pokok')
+                                        <form action="{{ route('admin.simpanan.destroy', $s) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete simpanan?')">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted small" title="Simpanan Pokok tidak bisa dihapus"><i class="bi bi-lock"></i></span>
+                                    @endif
                                 @endcan
                             </td>
                         </tr>

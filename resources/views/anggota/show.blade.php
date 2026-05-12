@@ -22,12 +22,20 @@
             </div>
 
             <div class="card mt-3">
-                <div class="card-header"><span>Saldo</span></div>
+                <div class="card-header"><span>Saldo Simpanan</span></div>
                 <div class="card-body">
+                    @php
+                        $perJenis = $anggota->simpanan->groupBy('jenis');
+                    @endphp
                     <div class="table-responsive"><table class="table table-sm">
-                        <tr><td class="fw-semibold">Saldo Awal</td><td class="text-end">Rp {{ number_format($anggota->saldo_awal, 2, ',', '.') }}</td></tr>
-                        <tr><td class="fw-semibold">Total Simpanan</td><td class="text-end">Rp {{ number_format($totalSimpanan, 2, ',', '.') }}</td></tr>
-                        <tr class="table-active"><td class="fw-bold">Saldo Akhir</td><td class="fw-bold text-end">Rp {{ number_format($saldoAkhir, 2, ',', '.') }}</td></tr>
+                        @foreach(['pokok', 'wajib', 'sukarela', 'bagi_hasil'] as $jenis)
+                            @php $sub = $perJenis->get($jenis, collect()); @endphp
+                            <tr>
+                                <td class="fw-semibold">{{ \App\Models\Simpanan::jenisLabel($jenis) }}</td>
+                                <td class="text-end">Rp {{ number_format($sub->sum('nominal'), 2, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                        <tr class="table-active"><td class="fw-bold">Total Simpanan</td><td class="fw-bold text-end">Rp {{ number_format($totalSimpanan, 2, ',', '.') }}</td></tr>
                     </table></div>
                 </div>
             </div>

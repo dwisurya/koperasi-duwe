@@ -48,8 +48,9 @@
                         <input type="text" name="ibu" value="{{ old('ibu') }}" class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Saldo Awal (Rp)</label>
-                        <input type="text" name="saldo_awal" value="{{ old('saldo_awal') ? number_format((float) old('saldo_awal'), 0, ',', '.') : '0' }}" class="form-control rupiah-input">
+                        <label class="form-label">Simpanan Pokok (Rp)</label>
+                        <input type="text" name="simpanan_pokok" value="{{ old('simpanan_pokok') ? number_format((float) old('simpanan_pokok'), 0, ',', '.') : '0' }}" class="form-control rupiah-input">
+                        <small class="text-muted">{{ __('Simpanan pokok awal saat pendaftaran, tidak bisa ditarik') }}</small>
                     </div>
                 </div>
 

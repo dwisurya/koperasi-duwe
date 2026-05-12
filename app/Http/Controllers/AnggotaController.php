@@ -31,10 +31,9 @@ class AnggotaController extends Controller implements HasMiddleware
         $anggota->load(['simpanan', 'pinjaman.anggota', 'pinjaman.bungaPinjaman', 'pinjaman.approver']);
 
         $totalSimpanan = $anggota->simpanan->sum('nominal');
-        $saldoAkhir = $anggota->saldo_awal + $totalSimpanan;
         $totalPinjaman = $anggota->pinjaman->sum('nominal');
 
-        return view('anggota.show', compact('anggota', 'totalSimpanan', 'saldoAkhir', 'totalPinjaman'));
+        return view('anggota.show', compact('anggota', 'totalSimpanan', 'totalPinjaman'));
     }
 
     public function create()
@@ -45,7 +44,7 @@ class AnggotaController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $request->merge([
-            'saldo_awal' => str_replace('.', '', $request->saldo_awal),
+            'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
         ]);
 
         $validated = $request->validate([
@@ -58,10 +57,19 @@ class AnggotaController extends Controller implements HasMiddleware
             'tanggal_daftar' => 'nullable|date',
             'ayah' => 'nullable|max:100',
             'ibu' => 'nullable|max:100',
-            'saldo_awal' => 'nullable|numeric|min:0',
+            'simpanan_pokok' => 'nullable|numeric|min:0',
         ]);
 
-        Anggota::create($validated);
+        $anggota = Anggota::create($validated);
+
+        if (($request->simpanan_pokok ?? 0) > 0) {
+            $anggota->simpanan()->create([
+                'jenis' => 'pokok',
+                'nominal' => $request->simpanan_pokok,
+                'keterangan' => 'Simpanan Pokok awal',
+                'is_active' => true,
+            ]);
+        }
 
         return redirect()->route('admin.anggota.index')->with('success', 'Anggota created successfully.');
     }
@@ -73,10 +81,6 @@ class AnggotaController extends Controller implements HasMiddleware
 
     public function update(Request $request, Anggota $anggota)
     {
-        $request->merge([
-            'saldo_awal' => str_replace('.', '', $request->saldo_awal),
-        ]);
-
         $validated = $request->validate([
             'nama' => 'required|max:255',
             'nik' => 'nullable|max:20',
@@ -87,7 +91,6 @@ class AnggotaController extends Controller implements HasMiddleware
             'tanggal_daftar' => 'nullable|date',
             'ayah' => 'nullable|max:100',
             'ibu' => 'nullable|max:100',
-            'saldo_awal' => 'nullable|numeric|min:0',
         ]);
 
         $anggota->update($validated);

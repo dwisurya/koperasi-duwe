@@ -78,9 +78,10 @@ Permissions: `role-list/create/edit/delete`, `permission-list/create/edit/delete
 - Feature tests use `array` cache + `sync` queue (see `phpunit.xml`)
 - Route parameter naming differs per resource: `bunga-pinjaman` → `bungaPinjaman` (explicit override), `anggota` → `anggota`; others use default singular snake_case
 - `Anggota` auto-generates `kode` on create (`AG-00001`, `AG-00002`, …)
-- `Anggota` has `saldo_awal` field (decimal, default 0), shown/edited in create/edit forms with rupiah formatting
 - `Anggota` has `simpanan()` and `pinjaman()` hasMany relationships
-- `/admin/anggota/{anggota}` (`admin.anggota.show`) displays member detail, saldo (awal + total simpanan = akhir), list simpanan per jenis, and list pinjaman per status
+- Saat create anggota, bisa input **Simpanan Pokok** (menggantikan saldo_awal) — otomatis membuat record Simpanan jenis `pokok`
+- Simpanan Pokok tidak bisa dihapus atau diubah jenisnya selama anggota masih aktif
+- `/admin/anggota/{anggota}` (`admin.anggota.show`) displays member detail, total simpanan per jenis, saldo akhir, and list pinjaman per status
 - `Pinjaman` status values: `diajukan`, `disetujui`, `ditolak`, `aktif`, `lunas`, `macet` (used in `getStatusLabelAttribute` / `getStatusColorAttribute`). Default on create: `diajukan`.
 
 ## Periode (Tahun Buku)

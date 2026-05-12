@@ -22,7 +22,6 @@ class Anggota extends Model
         'tanggal_daftar',
         'ayah',
         'ibu',
-        'saldo_awal',
     ];
 
     protected function casts(): array
@@ -30,7 +29,6 @@ class Anggota extends Model
         return [
             'tanggal_lahir' => 'date',
             'tanggal_daftar' => 'date',
-            'saldo_awal' => 'decimal:2',
         ];
     }
 

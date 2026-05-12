@@ -18,17 +18,25 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Jenis</label>
-                        <select name="jenis" class="form-select" required>
-                            <option value="">- Select -</option>
-                            <option value="pokok" {{ old('jenis', $simpanan->jenis) === 'pokok' ? 'selected' : '' }}>Simpanan Pokok</option>
-                            <option value="wajib" {{ old('jenis', $simpanan->jenis) === 'wajib' ? 'selected' : '' }}>Simpanan Wajib</option>
-                            <option value="sukarela" {{ old('jenis', $simpanan->jenis) === 'sukarela' ? 'selected' : '' }}>Simpanan Sukarela</option>
-                            <option value="bagi_hasil" {{ old('jenis', $simpanan->jenis) === 'bagi_hasil' ? 'selected' : '' }}>Bagi Hasil</option>
-                        </select>
+                        @if($simpanan->jenis === 'pokok')
+                            <input type="text" value="Simpanan Pokok" class="form-control" readonly>
+                            <input type="hidden" name="jenis" value="pokok">
+                        @else
+                            <select name="jenis" class="form-select" required>
+                                <option value="">- Select -</option>
+                                <option value="pokok" {{ old('jenis', $simpanan->jenis) === 'pokok' ? 'selected' : '' }}>Simpanan Pokok</option>
+                                <option value="wajib" {{ old('jenis', $simpanan->jenis) === 'wajib' ? 'selected' : '' }}>Simpanan Wajib</option>
+                                <option value="sukarela" {{ old('jenis', $simpanan->jenis) === 'sukarela' ? 'selected' : '' }}>Simpanan Sukarela</option>
+                                <option value="bagi_hasil" {{ old('jenis', $simpanan->jenis) === 'bagi_hasil' ? 'selected' : '' }}>Bagi Hasil</option>
+                            </select>
+                        @endif
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nominal (Rp)</label>
-                        <input type="number" step="0.01" name="nominal" value="{{ old('nominal', $simpanan->nominal) }}" class="form-control" required>
+                        <input type="number" step="0.01" name="nominal" value="{{ old('nominal', $simpanan->nominal) }}" class="form-control" {{ $simpanan->jenis === 'pokok' ? 'readonly' : '' }} required>
+                        @if($simpanan->jenis === 'pokok')
+                            <small class="text-muted">Simpanan Pokok tidak bisa dikurangi nominalnya.</small>
+                        @endif
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Status</label>

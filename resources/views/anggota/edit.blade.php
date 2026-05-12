@@ -52,8 +52,10 @@
                         <input type="text" name="ibu" value="{{ old('ibu', $anggota->ibu) }}" class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Saldo Awal (Rp)</label>
-                        <input type="text" name="saldo_awal" value="{{ old('saldo_awal') ? number_format((float) old('saldo_awal'), 0, ',', '.') : number_format((float) $anggota->saldo_awal, 0, ',', '.') }}" class="form-control rupiah-input">
+                        <label class="form-label">Simpanan Pokok</label>
+                        @php $pokok = $anggota->simpanan->firstWhere('jenis', 'pokok'); @endphp
+                        <input type="text" value="Rp {{ number_format($pokok?->nominal ?? 0, 0, ',', '.') }}" class="form-control" readonly>
+                        <small class="text-muted">{{ __('Simpanan pokok tidak bisa diubah di sini. Gunakan menu Transaksi > Simpanan.') }}</small>
                     </div>
                 </div>
 
@@ -65,22 +67,3 @@
         </div>
     </div>
 </x-app-layout>
-
-@push('scripts')
-<script>
-    function formatRupiah(el) {
-        const val = el.value.replace(/\./g, '').replace(/\D/g, '');
-        el.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
-    document.querySelectorAll('.rupiah-input').forEach(function(el) {
-        el.addEventListener('input', function() { formatRupiah(this); });
-    });
-
-    document.getElementById('anggotaForm')?.addEventListener('submit', function() {
-        document.querySelectorAll('.rupiah-input').forEach(function(el) {
-            el.value = el.value.replace(/\./g, '');
-        });
-    });
-</script>
-@endpush
