@@ -14,11 +14,6 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
         ]);
 
-        Periode::firstOrCreate(
-            ['tahun' => date('Y')],
-            ['nama' => 'Tahun Buku '.date('Y'), 'is_active' => true]
-        );
-
         $users = [
             ['name' => 'Super Admin', 'email' => 'admin@example.com', 'role' => 'Super Admin'],
             ['name' => 'Manager', 'email' => 'manager@example.com', 'role' => 'Manager'],
@@ -35,6 +30,15 @@ class DatabaseSeeder extends Seeder
                 ]
             );
             $user->assignRole($data['role']);
+        }
+
+        try {
+            Periode::firstOrCreate(
+                ['tahun' => date('Y')],
+                ['nama' => 'Tahun Buku '.date('Y'), 'is_active' => true]
+            );
+        } catch (\Throwable $e) {
+            echo 'Periode creation skipped: '.$e->getMessage().PHP_EOL;
         }
     }
 }
