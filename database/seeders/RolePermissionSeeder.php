@@ -21,6 +21,7 @@ class RolePermissionSeeder extends Seeder
             'pinjaman-list', 'pinjaman-create', 'pinjaman-edit', 'pinjaman-delete',
             'pinjaman-approve',
             'angsuran-list', 'angsuran-create', 'angsuran-edit', 'angsuran-delete',
+            'kas-list', 'kas-create', 'kas-edit', 'kas-delete',
             'buku-kredit-list',
             'periode-list', 'periode-create', 'periode-edit', 'periode-delete',
         ];
@@ -41,6 +42,7 @@ class RolePermissionSeeder extends Seeder
             'anggota-list',
             'simpanan-list',
             'angsuran-list',
+            'kas-list',
             'buku-kredit-list',
         ]);
 
@@ -176,6 +178,18 @@ class RolePermissionSeeder extends Seeder
         ]);
         $angsuranMenu->roles()->sync([$superAdmin->id, $admin->id]);
 
+        $kasMenu = Menu::create([
+            'name' => 'Kas',
+            'parent_id' => $transaksi->id,
+            'route' => 'admin.kas.index',
+            'icon' => null,
+            'url' => null,
+            'permission' => 'kas-list',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+        $kasMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
+
         $bukuKreditMenu = Menu::create([
             'name' => 'Buku Kredit',
             'parent_id' => $transaksi->id,
@@ -183,7 +197,7 @@ class RolePermissionSeeder extends Seeder
             'icon' => null,
             'url' => null,
             'permission' => 'buku-kredit-list',
-            'order' => 4,
+            'order' => 5,
             'is_active' => true,
         ]);
         $bukuKreditMenu->roles()->sync([$superAdmin->id, $admin->id]);

@@ -5,6 +5,7 @@ use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\AngsuranController;
 use App\Http\Controllers\BukuKreditController;
 use App\Http\Controllers\BungaPinjamanController;
+use App\Http\Controllers\KasController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PermissionController;
@@ -51,6 +52,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('periodes', PeriodeController::class)->except(['show']);
 
     Route::resource('angsuran', AngsuranController::class)->except(['show']);
+
+    Route::resource('kas', KasController::class)->except(['show'])->parameters(['kas' => 'kas']);
 
     Route::get('buku-kredit', [BukuKreditController::class, 'index'])->name('buku-kredit.index');
     Route::get('buku-kredit/{pinjaman}', [BukuKreditController::class, 'show'])->name('buku-kredit.show');

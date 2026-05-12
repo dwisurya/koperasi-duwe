@@ -1,4 +1,4 @@
-# AGENTS.md — Laravel 12.x app (RBAC admin panel)
+# AGENTS.md — Laravel 12 RBAC koperasi app (Breeze Blade + Spatie)
 
 ## Setup
 
@@ -6,7 +6,7 @@
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-php artisan db:seed                 # creates roles, permissions, default menus + users
+php artisan db:seed                 # creates roles, permissions, menus, periode, 3 users
 ```
 
 `DB_CONNECTION=sqlite` → `database/database.sqlite`. Session/cache/queue default to `database` driver.
@@ -14,8 +14,8 @@ php artisan db:seed                 # creates roles, permissions, default menus 
 ## Dev servers
 
 ```powershell
-composer run dev          # concurrently: php artisan serve + queue:listen + pail + npm run dev
-php artisan serve         # individual
+composer run dev          # concurrently: artisan serve + queue:listen + pail + npm run dev
+php artisan serve
 npm run dev               # Vite HMR
 php artisan pail          # tail logs
 ```
@@ -23,7 +23,7 @@ php artisan pail          # tail logs
 ## Testing
 
 ```powershell
-php artisan test                  # preferred
+php artisan test
 php artisan test --filter=SomeTest --testsuite=Feature
 ```
 
@@ -39,12 +39,12 @@ npm run build             # production Vite build
 ## Auth & RBAC
 
 - **Breeze** (Blade stack) + **Spatie/laravel-permission**
-- `User` model uses `HasRoles` trait
+- `User` uses `HasRoles` trait
 - Middleware aliases in `bootstrap/app.php`: `role`, `permission`, `role_or_permission`
 - Controllers implement `HasMiddleware` with `permission:*` middleware
 - Admin routes under `/admin` prefix, auth+verified required, permission-gated per CRUD action
 
-Seeder creates 4 roles: Super Admin (all perms), Admin (all perms), Manager (view + approve), User (no perms).
+Seeder creates 4 roles: Super Admin (all perms), Admin (all perms), Manager (view + approve), User (none). 3 users seeded:
 
 | Email | Password | Role |
 |---|---|---|
@@ -52,44 +52,42 @@ Seeder creates 4 roles: Super Admin (all perms), Admin (all perms), Manager (vie
 | manager@example.com | password | Manager |
 | user@example.com | password | User |
 
-Permissions: `role-list/create/edit/delete`, `permission-list/create/edit/delete`, `menu-list/create/edit/delete`, `anggota-list/create/edit/delete`, `bunga-pinjaman-list/create/edit/delete`, `simpanan-list/create/edit/delete`, `pinjaman-list/create/edit/delete`, `pinjaman-approve`.
+Permissions: `role-{list,create,edit,delete}`, `permission-*`, `menu-*`, `anggota-*`, `bunga-pinjaman-*`, `simpanan-*`, `pinjaman-*` + `pinjaman-approve`, `angsuran-*`, `kas-*`, `buku-kredit-list`, `periode-*`.
 
 ## Menu system
 
 - `menus` table: parent/child hierarchy, icon, route/url, permission, order, active flag
 - `menu_role` pivot for role-based visibility
 - `Menu::isVisibleByUser()` — Super Admin sees all; otherwise checks permission + role
-- Bunga Pinjaman CRUD under System menu with `bunga-pinjaman-*` permissions; table `bunga_pinjaman`, model `BungaPinjaman`
-- Simpanan CRUD (**under Transaksi** menu) with `simpanan-*` permissions; table `simpanan`, model `Simpanan`; jenis: pokok, wajib, sukarela, bagi_hasil
-- Pengajuan CRUD (**under Transaksi** menu) with `pinjaman-*` permissions
-- Admin dashboard (`/admin/dashboard`) displays anggota count, simpanan totals per jenis, and Chart.js bar chart for simpanan vs pinjaman
-- Angsuran CRUD (**under Transaksi**) with `angsuran-*` permissions; table `angsurans`, model `Angsuran`; mencatat pembayaran angsuran pinjaman per anggota
-- Buku Kredit view (**under Transaksi**) with `buku-kredit-list` permission; menampilkan buku/kartu kredit per pinjaman + riwayat angsuran
-  - Approval workflow: Manager role with `pinjaman-approve` permission can approve/reject diajukan records via POST `/admin/pinjaman/{pinjaman}/approve` or `/reject`
-  - Installment simulation at `/admin/pinjaman/simulasi` (GET, params: nominal, bunga, tenor), also available inline in create form
-  - Contract printing at `/admin/pinjaman/{pinjaman}/cetak-kontrak` (printable HTML view)
 
-## Gotchas
+Menu tree:
+- **System** (admin only): Roles, Permissions, Menus, Bunga Pinjaman, Periode
+- **Anggota** (admin + manager)
+- **Transaksi**: Simpanan, Pengajuan (pinjaman CRUD), Angsuran, Kas (Buku Kas), Buku Kredit
 
-- **`.env` is gitignored** — copy from `.env.example` on fresh clone
-- `php artisan optimize:clear` after adding/modifying middleware aliases or config
-- Seeder (`RolePermissionSeeder`) must run after `migrate`
-- Indonesian model names need `protected $table` to avoid English pluralizer bug (e.g. `BungaPinjaman` → `bunga_pinjamen`)
-- Feature tests use `array` cache + `sync` queue (see `phpunit.xml`)
-- Route parameter naming differs per resource: `bunga-pinjaman` → `bungaPinjaman` (explicit override), `anggota` → `anggota`; others use default singular snake_case
-- `Anggota` auto-generates `kode` on create (`AG-00001`, `AG-00002`, …)
-- `Anggota` has `simpanan()` and `pinjaman()` hasMany relationships
-- Saat create anggota, bisa input **Simpanan Pokok** (menggantikan saldo_awal) — otomatis membuat record Simpanan jenis `pokok`
-- Simpanan Pokok tidak bisa dihapus atau diubah jenisnya selama anggota masih aktif
-- `/admin/anggota/{anggota}` (`admin.anggota.show`) displays member detail, total simpanan per jenis, saldo akhir, and list pinjaman per status
-- `Pinjaman` status values: `diajukan`, `disetujui`, `ditolak`, `aktif`, `lunas`, `macet` (used in `getStatusLabelAttribute` / `getStatusColorAttribute`). Default on create: `diajukan`.
+Extra routes: `POST /admin/pinjaman/{pinjaman}/approve|reject`, `GET /admin/pinjaman/simulasi`, `GET /admin/pinjaman/{pinjaman}/cetak-kontrak`. Dashboard (`/admin/dashboard`) shows anggota count, simpanan totals per jenis, Chart.js bar chart — filtered by active periode.
+
+## Localization
+
+- Default locale `id` (`APP_LOCALE` in `.env`). Switch via `GET /lang/{locale}` (accepts `id` or `en`). `Localization` middleware appended to all web routes in `bootstrap/app.php`. Lang files in `lang/{id,en}`.
 
 ## Periode (Tahun Buku)
 
-- `periodes` table: `tahun` (string 4), `nama` (nullable), `is_active` (boolean, satu periode active)
-- Model `Periode` with `getActive()` / `getActiveId()` helpers
-- Simpanan & Pinjaman otomatis diisi `periode_id` dari periode aktif saat create (via `creating` boot event)
-- Dashboard, Simpanan & Pinjaman index menampilkan kolom Periode
-- Dashboard chart/stats filtered by periode aktif
-- CRUD Periode di bawah menu System, permission `periode-*`
-- Seed membuat periode tahun berjalan (2026) sebagai default
+- `periodes` table: `tahun` (string 4), `nama` (nullable), `is_active` (one active at a time)
+- `Periode::getActive()` / `getActiveId()` helpers
+- `Simpanan` & `Pinjaman` auto-assigned `periode_id` from active periode via `creating` boot event
+- Dashboard, Simpanan & Pinjaman index display Periode column, filtered by active periode
+- CRUD under System menu, `periode-*` permissions; seed creates current year
+
+## Gotchas
+
+- `.env` gitignored — copy from `.env.example` on fresh clone
+- `php artisan optimize:clear` after modifying middleware aliases or config
+- Indonesian model names need `protected $table` to avoid English pluralizer bug (e.g. `BungaPinjaman` → `bunga_pinjamen`, `Angsuran` → `angsurans`)
+- Route parameter naming differs per resource: `bunga-pinjaman` → `bungaPinjaman` (explicit override), `anggota` → `anggota`; others use default singular snake_case
+- Feature tests use `array` cache + `sync` queue (see `phpunit.xml`)
+- `Pinjaman` status values: `diajukan` (default), `disetujui`, `ditolak`, `aktif`, `lunas`, `macet`
+- `Anggota` auto-generates `kode` on create (`AG-00001`, `AG-00002`, …)
+- Create anggota can also create **Simpanan Pokok** (via `simpanan_pokok` field) — auto-creates Simpanan record with `jenis: pokok`
+- Simpanan Pokok can't be deleted or have its `jenis` changed while anggota is active
+- `/admin/anggota/{anggota}` shows member detail, total simpanan per jenis, list pinjaman per status
