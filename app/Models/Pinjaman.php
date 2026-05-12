@@ -79,6 +79,11 @@ class Pinjaman extends Model
         return $this->belongsTo(Periode::class);
     }
 
+    public function angsurans()
+    {
+        return $this->hasMany(Angsuran::class);
+    }
+
     public function scopePeriodeAktif($query)
     {
         return $query->where('periode_id', Periode::getActiveId());

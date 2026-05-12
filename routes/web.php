@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\AngsuranController;
+use App\Http\Controllers\BukuKreditController;
 use App\Http\Controllers\BungaPinjamanController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PeriodeController;
@@ -47,6 +49,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::post('periodes/{periode}/activate', [PeriodeController::class, 'activate'])->name('periodes.activate');
     Route::resource('periodes', PeriodeController::class)->except(['show']);
+
+    Route::resource('angsuran', AngsuranController::class)->except(['show']);
+
+    Route::get('buku-kredit', [BukuKreditController::class, 'index'])->name('buku-kredit.index');
+    Route::get('buku-kredit/{pinjaman}', [BukuKreditController::class, 'show'])->name('buku-kredit.show');
 
     Route::get('pinjaman/simulasi', [PinjamanController::class, 'simulasi'])->name('pinjaman.simulasi');
     Route::post('pinjaman/{pinjaman}/approve', [PinjamanController::class, 'approve'])->name('pinjaman.approve');

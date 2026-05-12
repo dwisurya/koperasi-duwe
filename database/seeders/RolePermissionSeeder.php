@@ -20,6 +20,8 @@ class RolePermissionSeeder extends Seeder
             'simpanan-list', 'simpanan-create', 'simpanan-edit', 'simpanan-delete',
             'pinjaman-list', 'pinjaman-create', 'pinjaman-edit', 'pinjaman-delete',
             'pinjaman-approve',
+            'angsuran-list', 'angsuran-create', 'angsuran-edit', 'angsuran-delete',
+            'buku-kredit-list',
             'periode-list', 'periode-create', 'periode-edit', 'periode-delete',
         ];
 
@@ -38,6 +40,8 @@ class RolePermissionSeeder extends Seeder
             'pinjaman-list', 'pinjaman-approve',
             'anggota-list',
             'simpanan-list',
+            'angsuran-list',
+            'buku-kredit-list',
         ]);
 
         $user = Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
@@ -105,20 +109,6 @@ class RolePermissionSeeder extends Seeder
         );
         $bungaPinjamanMenu->roles()->sync([$superAdmin->id, $admin->id]);
 
-        $simpananMenu = Menu::firstOrCreate(
-            ['name' => 'Simpanan'],
-            [
-                'parent_id' => null,
-                'route' => 'admin.simpanan.index',
-                'icon' => null,
-                'url' => null,
-                'permission' => 'simpanan-list',
-                'order' => 6,
-                'is_active' => true,
-            ]
-        );
-        $simpananMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
-
         Menu::where('route', 'admin.members.index')->delete();
 
         $anggotaMenu = Menu::firstOrCreate(
@@ -135,19 +125,68 @@ class RolePermissionSeeder extends Seeder
         );
         $anggotaMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
 
+        $transaksi = Menu::updateOrCreate(
+            ['name' => 'Transaksi'],
+            [
+                'icon' => 'bi bi-arrow-left-right',
+                'route' => null,
+                'url' => null,
+                'order' => 6,
+                'is_active' => true,
+            ]
+        );
+
+        $simpananMenu = Menu::updateOrCreate(
+            ['name' => 'Simpanan'],
+            [
+                'parent_id' => $transaksi->id,
+                'route' => 'admin.simpanan.index',
+                'icon' => null,
+                'url' => null,
+                'permission' => 'simpanan-list',
+                'order' => 1,
+                'is_active' => true,
+            ]
+        );
+        $simpananMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
+
         Menu::where('name', 'Pinjaman')->orWhere('name', 'Pengajuan')->delete();
 
         $pinjamanMenu = Menu::create([
             'name' => 'Pengajuan',
-            'parent_id' => null,
+            'parent_id' => $transaksi->id,
             'route' => 'admin.pinjaman.index',
             'icon' => null,
             'url' => null,
             'permission' => 'pinjaman-list',
-            'order' => 7,
+            'order' => 2,
             'is_active' => true,
         ]);
         $pinjamanMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
+
+        $angsuranMenu = Menu::create([
+            'name' => 'Angsuran',
+            'parent_id' => $transaksi->id,
+            'route' => 'admin.angsuran.index',
+            'icon' => null,
+            'url' => null,
+            'permission' => 'angsuran-list',
+            'order' => 3,
+            'is_active' => true,
+        ]);
+        $angsuranMenu->roles()->sync([$superAdmin->id, $admin->id]);
+
+        $bukuKreditMenu = Menu::create([
+            'name' => 'Buku Kredit',
+            'parent_id' => $transaksi->id,
+            'route' => 'admin.buku-kredit.index',
+            'icon' => null,
+            'url' => null,
+            'permission' => 'buku-kredit-list',
+            'order' => 4,
+            'is_active' => true,
+        ]);
+        $bukuKreditMenu->roles()->sync([$superAdmin->id, $admin->id]);
 
         $periodeMenu = Menu::firstOrCreate(
             ['name' => 'Periode', 'parent_id' => $systemManagement->id],

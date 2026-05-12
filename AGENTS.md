@@ -60,9 +60,11 @@ Permissions: `role-list/create/edit/delete`, `permission-list/create/edit/delete
 - `menu_role` pivot for role-based visibility
 - `Menu::isVisibleByUser()` — Super Admin sees all; otherwise checks permission + role
 - Bunga Pinjaman CRUD under System menu with `bunga-pinjaman-*` permissions; table `bunga_pinjaman`, model `BungaPinjaman`
-- Simpanan CRUD (**standalone** menu, not under System) with `simpanan-*` permissions; table `simpanan`, model `Simpanan`; jenis: pokok, wajib, sukarela, bagi_hasil
+- Simpanan CRUD (**under Transaksi** menu) with `simpanan-*` permissions; table `simpanan`, model `Simpanan`; jenis: pokok, wajib, sukarela, bagi_hasil
+- Pengajuan CRUD (**under Transaksi** menu) with `pinjaman-*` permissions
 - Admin dashboard (`/admin/dashboard`) displays anggota count, simpanan totals per jenis, and Chart.js bar chart for simpanan vs pinjaman
-- Pengajuan (Pinjaman) CRUD as standalone menu with `pinjaman-*` permissions; table `pinjaman`, model `Pinjaman`; linked to anggota + bunga_pinjaman; bunga can be overridden per loan
+- Angsuran CRUD (**under Transaksi**) with `angsuran-*` permissions; table `angsurans`, model `Angsuran`; mencatat pembayaran angsuran pinjaman per anggota
+- Buku Kredit view (**under Transaksi**) with `buku-kredit-list` permission; menampilkan buku/kartu kredit per pinjaman + riwayat angsuran
   - Approval workflow: Manager role with `pinjaman-approve` permission can approve/reject diajukan records via POST `/admin/pinjaman/{pinjaman}/approve` or `/reject`
   - Installment simulation at `/admin/pinjaman/simulasi` (GET, params: nominal, bunga, tenor), also available inline in create form
   - Contract printing at `/admin/pinjaman/{pinjaman}/cetak-kontrak` (printable HTML view)
