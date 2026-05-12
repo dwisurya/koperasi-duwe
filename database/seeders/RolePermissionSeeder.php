@@ -20,6 +20,7 @@ class RolePermissionSeeder extends Seeder
             'simpanan-list', 'simpanan-create', 'simpanan-edit', 'simpanan-delete',
             'pinjaman-list', 'pinjaman-create', 'pinjaman-edit', 'pinjaman-delete',
             'pinjaman-approve',
+            'periode-list', 'periode-create', 'periode-edit', 'periode-delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -147,5 +148,18 @@ class RolePermissionSeeder extends Seeder
             'is_active' => true,
         ]);
         $pinjamanMenu->roles()->sync([$superAdmin->id, $admin->id, $manager->id]);
+
+        $periodeMenu = Menu::firstOrCreate(
+            ['name' => 'Periode', 'parent_id' => $systemManagement->id],
+            [
+                'route' => 'admin.periodes.index',
+                'icon' => null,
+                'url' => null,
+                'permission' => 'periode-list',
+                'order' => 5,
+                'is_active' => true,
+            ]
+        );
+        $periodeMenu->roles()->sync([$superAdmin->id, $admin->id]);
     }
 }

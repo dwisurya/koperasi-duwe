@@ -13,6 +13,7 @@ class Simpanan extends Model
 
     protected $fillable = [
         'anggota_id',
+        'periode_id',
         'jenis',
         'nominal',
         'keterangan',
@@ -27,9 +28,28 @@ class Simpanan extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (self $simpanan) {
+            if (! $simpanan->periode_id) {
+                $simpanan->periode_id = Periode::getActiveId();
+            }
+        });
+    }
+
     public function anggota()
     {
         return $this->belongsTo(Anggota::class);
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function scopePeriodeAktif($query)
+    {
+        return $query->where('periode_id', Periode::getActiveId());
     }
 
     public function getJenisLabelAttribute(): string

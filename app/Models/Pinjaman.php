@@ -13,6 +13,7 @@ class Pinjaman extends Model
 
     protected $fillable = [
         'anggota_id',
+        'periode_id',
         'tanggal_pengajuan',
         'nominal',
         'bunga_pinjaman_id',
@@ -43,6 +44,9 @@ class Pinjaman extends Model
             if (! $pinjaman->status) {
                 $pinjaman->status = 'diajukan';
             }
+            if (! $pinjaman->periode_id) {
+                $pinjaman->periode_id = Periode::getActiveId();
+            }
             if ($pinjaman->tanggal_pengajuan && $pinjaman->tenor) {
                 $pinjaman->jatuh_tempo = $pinjaman->tanggal_pengajuan->addMonths($pinjaman->tenor);
             }
@@ -68,6 +72,16 @@ class Pinjaman extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    public function scopePeriodeAktif($query)
+    {
+        return $query->where('periode_id', Periode::getActiveId());
     }
 
     public function scopeMenunggu($query)

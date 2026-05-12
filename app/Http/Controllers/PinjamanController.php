@@ -24,7 +24,7 @@ class PinjamanController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $pinjaman = Pinjaman::with(['anggota', 'bungaPinjaman', 'approver'])->latest()->get();
+        $pinjaman = Pinjaman::with(['anggota', 'bungaPinjaman', 'approver', 'periode'])->latest()->get();
 
         return view('pinjaman.index', compact('pinjaman'));
     }
@@ -54,6 +54,7 @@ class PinjamanController extends Controller implements HasMiddleware
             'bunga_persen' => 'required|numeric|min:0|max:999.99',
             'tenor' => 'required|integer|min:1',
             'keterangan' => 'nullable|max:500',
+            'periode_id' => 'nullable|exists:periodes,id',
         ]);
 
         $validated['status'] = 'diajukan';
@@ -118,6 +119,7 @@ class PinjamanController extends Controller implements HasMiddleware
             'bunga_persen' => 'required|numeric|min:0|max:999.99',
             'tenor' => 'required|integer|min:1',
             'keterangan' => 'nullable|max:500',
+            'periode_id' => 'nullable|exists:periodes,id',
         ]);
 
         if ($pinjaman->status === 'diajukan') {

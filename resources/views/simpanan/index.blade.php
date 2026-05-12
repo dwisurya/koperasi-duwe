@@ -20,6 +20,7 @@
                         <th>Jenis</th>
                         <th>Nominal</th>
                         <th class="d-none d-md-table-cell">Keterangan</th>
+                        <th class="d-none d-md-table-cell">Periode</th>
                         <th>Status</th>
                         <th class="no-sort no-search" width="120">Actions</th>
                     </tr>
@@ -32,6 +33,7 @@
                             <td>{{ $s->jenis_label }}</td>
                             <td>Rp {{ number_format($s->nominal, 0, ',', '.') }}</td>
                             <td class="d-none d-md-table-cell">{{ $s->keterangan ?? '-' }}</td>
+                            <td class="d-none d-md-table-cell">{{ $s->periode?->tahun ?? '-' }}</td>
                             <td>
                                 @if($s->is_active)
                                     <span class="badge bg-success">Active</span>

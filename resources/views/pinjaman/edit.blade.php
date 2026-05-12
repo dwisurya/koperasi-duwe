@@ -90,6 +90,15 @@
                             </select>
                         @endif
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{{ __('Periode') }}</label>
+                        <select name="periode_id" class="form-select">
+                            <option value="">- {{ __('Auto (active period)') }} -</option>
+                            @foreach(\App\Models\Periode::latest()->get() as $p)
+                                <option value="{{ $p->id }}" {{ old('periode_id', $pinjaman->periode_id) == $p->id ? 'selected' : '' }}>{{ $p->tahun }} {{ $p->nama ? '- '.$p->nama : '' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-12">
                         <label class="form-label">{{ __('Keterangan') }}</label>
                         <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" rows="3">{{ old('keterangan', $pinjaman->keterangan) }}</textarea>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BungaPinjamanController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
@@ -43,6 +44,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('anggota', AnggotaController::class)->parameters(['anggota' => 'anggota']);
     Route::resource('bunga-pinjaman', BungaPinjamanController::class)->except(['show'])->parameters(['bunga_pinjaman' => 'bungaPinjaman']);
     Route::resource('simpanan', SimpananController::class)->except(['show']);
+
+    Route::post('periodes/{periode}/activate', [PeriodeController::class, 'activate'])->name('periodes.activate');
+    Route::resource('periodes', PeriodeController::class)->except(['show']);
 
     Route::get('pinjaman/simulasi', [PinjamanController::class, 'simulasi'])->name('pinjaman.simulasi');
     Route::post('pinjaman/{pinjaman}/approve', [PinjamanController::class, 'approve'])->name('pinjaman.approve');

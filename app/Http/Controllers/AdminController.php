@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anggota;
 use App\Models\Menu;
+use App\Models\Periode;
 use App\Models\Pinjaman;
 use App\Models\Simpanan;
 use App\Models\User;
@@ -14,6 +15,9 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        $periodeAktif = Periode::getActive();
+        $periodeId = $periodeAktif?->id;
+
         $stats = [
             'users' => User::count(),
             'roles' => Role::count(),
@@ -22,22 +26,30 @@ class AdminController extends Controller
             'anggota' => Anggota::count(),
         ];
 
+        $simpananQuery = Simpanan::query();
+        $pinjamanQuery = Pinjaman::query();
+
+        if ($periodeId) {
+            $simpananQuery->where('periode_id', $periodeId);
+            $pinjamanQuery->where('periode_id', $periodeId);
+        }
+
         $simpanan = [
-            'pokok' => Simpanan::where('jenis', 'pokok')->sum('nominal'),
-            'wajib' => Simpanan::where('jenis', 'wajib')->sum('nominal'),
-            'sukarela' => Simpanan::where('jenis', 'sukarela')->sum('nominal'),
-            'bagi_hasil' => Simpanan::where('jenis', 'bagi_hasil')->sum('nominal'),
+            'pokok' => (clone $simpananQuery)->where('jenis', 'pokok')->sum('nominal'),
+            'wajib' => (clone $simpananQuery)->where('jenis', 'wajib')->sum('nominal'),
+            'sukarela' => (clone $simpananQuery)->where('jenis', 'sukarela')->sum('nominal'),
+            'bagi_hasil' => (clone $simpananQuery)->where('jenis', 'bagi_hasil')->sum('nominal'),
         ];
 
         $pinjaman = [
-            'total' => Pinjaman::count(),
-            'menunggu' => Pinjaman::menunggu()->count(),
-            'disetujui' => Pinjaman::disetujui()->count(),
-            'aktif' => Pinjaman::aktif()->count(),
+            'total' => (clone $pinjamanQuery)->count(),
+            'menunggu' => (clone $pinjamanQuery)->menunggu()->count(),
+            'disetujui' => (clone $pinjamanQuery)->disetujui()->count(),
+            'aktif' => (clone $pinjamanQuery)->aktif()->count(),
         ];
 
-        $totalPinjaman = Pinjaman::sum('nominal');
+        $totalPinjaman = (clone $pinjamanQuery)->sum('nominal');
 
-        return view('admin.dashboard', compact('stats', 'simpanan', 'pinjaman', 'totalPinjaman'));
+        return view('admin.dashboard', compact('stats', 'simpanan', 'pinjaman', 'totalPinjaman', 'periodeAktif'));
     }
 }

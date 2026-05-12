@@ -22,7 +22,7 @@ class SimpananController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $simpanan = Simpanan::with('anggota')->latest()->get();
+        $simpanan = Simpanan::with('anggota', 'periode')->latest()->get();
 
         return view('simpanan.index', compact('simpanan'));
     }
@@ -42,6 +42,7 @@ class SimpananController extends Controller implements HasMiddleware
             'nominal' => 'required|numeric|min:0',
             'keterangan' => 'nullable|max:500',
             'is_active' => 'boolean',
+            'periode_id' => 'nullable|exists:periodes,id',
         ]);
 
         Simpanan::create($validated);
@@ -64,6 +65,7 @@ class SimpananController extends Controller implements HasMiddleware
             'nominal' => 'required|numeric|min:0',
             'keterangan' => 'nullable|max:500',
             'is_active' => 'boolean',
+            'periode_id' => 'nullable|exists:periodes,id',
         ]);
 
         $simpanan->update($validated);

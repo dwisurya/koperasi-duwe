@@ -1,6 +1,13 @@
 <x-app-layout>
     <x-slot name="header">{{ __('Dashboard') }}</x-slot>
 
+    @if($periodeAktif)
+        <div class="alert alert-info py-2 mb-3">
+            <i class="bi bi-calendar3"></i> {{ __('Periode aktif') }}: <strong>{{ $periodeAktif->tahun }}</strong>
+            @if($periodeAktif->nama) - {{ $periodeAktif->nama }} @endif
+        </div>
+    @endif
+
     <div class="row g-3">
         <div class="col-xl-3 col-md-6">
             <div class="card">

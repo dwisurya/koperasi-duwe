@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Periode;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
         ]);
+
+        Periode::firstOrCreate(
+            ['tahun' => date('Y')],
+            ['nama' => 'Tahun Buku '.date('Y'), 'is_active' => true]
+        );
 
         $users = [
             ['name' => 'Super Admin', 'email' => 'admin@example.com', 'role' => 'Super Admin'],

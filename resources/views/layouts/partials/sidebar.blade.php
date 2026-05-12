@@ -13,6 +13,13 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h4>{{ config('app.name', 'Laravel') }}</h4>
+        @php $periode = \App\Models\Periode::getActive(); @endphp
+        @if($periode)
+            <div class="small text-white-50 mt-1">
+                <i class="bi bi-calendar3"></i> {{ $periode->tahun }}
+                @if($periode->nama) - {{ $periode->nama }} @endif
+            </div>
+        @endif
     </div>
 
     <div class="nav-section">

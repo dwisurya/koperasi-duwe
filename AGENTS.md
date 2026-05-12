@@ -80,3 +80,13 @@ Permissions: `role-list/create/edit/delete`, `permission-list/create/edit/delete
 - `Anggota` has `simpanan()` and `pinjaman()` hasMany relationships
 - `/admin/anggota/{anggota}` (`admin.anggota.show`) displays member detail, saldo (awal + total simpanan = akhir), list simpanan per jenis, and list pinjaman per status
 - `Pinjaman` status values: `diajukan`, `disetujui`, `ditolak`, `aktif`, `lunas`, `macet` (used in `getStatusLabelAttribute` / `getStatusColorAttribute`). Default on create: `diajukan`.
+
+## Periode (Tahun Buku)
+
+- `periodes` table: `tahun` (string 4), `nama` (nullable), `is_active` (boolean, satu periode active)
+- Model `Periode` with `getActive()` / `getActiveId()` helpers
+- Simpanan & Pinjaman otomatis diisi `periode_id` dari periode aktif saat create (via `creating` boot event)
+- Dashboard, Simpanan & Pinjaman index menampilkan kolom Periode
+- Dashboard chart/stats filtered by periode aktif
+- CRUD Periode di bawah menu System, permission `periode-*`
+- Seed membuat periode tahun berjalan (2026) sebagai default

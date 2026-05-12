@@ -26,6 +26,7 @@
                         <th class="d-none d-md-table-cell">{{ __('Tenor') }}</th>
                         <th>{{ __('Status') }}</th>
                         <th class="d-none d-lg-table-cell">{{ __('Disetujui Oleh') }}</th>
+                        <th class="d-none d-md-table-cell">{{ __('Periode') }}</th>
                         <th class="no-sort no-search" width="180">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -40,6 +41,7 @@
                             <td class="d-none d-md-table-cell">{{ $p->tenor }} {{ __('Bulan') }}</td>
                             <td><span class="badge bg-{{ $p->status_color }}">{{ __($p->status_label) }}</span></td>
                             <td class="d-none d-lg-table-cell">{{ $p->approver?->name ?? '-' }}</td>
+                            <td class="d-none d-md-table-cell">{{ $p->periode?->tahun ?? '-' }}</td>
                             <td>
                                 @can('pinjaman-approve')
                                     @if($p->status === 'diajukan')
