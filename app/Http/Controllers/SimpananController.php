@@ -24,7 +24,15 @@ class SimpananController extends Controller implements HasMiddleware
     {
         $simpanan = Simpanan::with('anggota', 'periode')->latest()->get();
 
-        return view('simpanan.index', compact('simpanan'));
+        $totalPerJenis = [
+            'pokok' => Simpanan::where('jenis', 'pokok')->sum('nominal'),
+            'wajib' => Simpanan::where('jenis', 'wajib')->sum('nominal'),
+            'sukarela' => Simpanan::where('jenis', 'sukarela')->sum('nominal'),
+            'bagi_hasil' => Simpanan::where('jenis', 'bagi_hasil')->sum('nominal'),
+        ];
+        $grandTotal = array_sum($totalPerJenis);
+
+        return view('simpanan.index', compact('simpanan', 'totalPerJenis', 'grandTotal'));
     }
 
     public function create()

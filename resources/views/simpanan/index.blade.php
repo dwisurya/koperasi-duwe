@@ -12,6 +12,24 @@
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
             @endif
+
+            <div class="row g-2 mb-3">
+                @foreach(['pokok' => 'Simpanan Pokok', 'wajib' => 'Simpanan Wajib', 'sukarela' => 'Simpanan Sukarela', 'bagi_hasil' => 'Bagi Hasil'] as $key => $label)
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block">{{ $label }}</small>
+                            <strong>Rp {{ number_format($totalPerJenis[$key], 0, ',', '.') }}</strong>
+                        </div>
+                    </div>
+                @endforeach
+                <div class="col-6 col-md-3">
+                    <div class="p-2 border rounded bg-primary bg-opacity-10">
+                        <small class="text-muted d-block">Total Semua</small>
+                        <strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong>
+                    </div>
+                </div>
+            </div>
+
             <div class="table-responsive"><table id="dataTable" class="table">
                 <thead>
                     <tr>
