@@ -18,6 +18,7 @@
                         <th width="50">No</th>
                         <th>Nama</th>
                         <th>Bunga (%)</th>
+                        <th>Berlaku</th>
                         <th class="d-none d-md-table-cell">Jenis</th>
                         <th class="d-none d-md-table-cell">Keterangan</th>
                         <th>Status</th>
@@ -30,6 +31,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold text-dark">{{ $bp->nama }}</td>
                             <td>{{ number_format($bp->bunga, 2) }}%</td>
+                            <td>{{ $bp->tanggal_berlaku?->format('d/m/Y') ?? '-' }}</td>
                             <td class="d-none d-md-table-cell">{{ $bp->jenis ?? '-' }}</td>
                             <td class="d-none d-md-table-cell">{{ $bp->keterangan ?? '-' }}</td>
                             <td>

@@ -118,8 +118,27 @@
 @push('scripts')
 <script>
     const bungaMap = @json($bungaPinjaman->mapWithKeys(fn($bp) => [
-        "{$bp->nama} ({$bp->bunga}%)" => ['id' => $bp->id, 'bunga' => $bp->bunga]
+        "{$bp->nama} ({$bp->bunga}%)" => ['id' => $bp->id, 'bunga' => $bp->bunga, 'tanggal_berlaku' => $bp->tanggal_berlaku?->format('Y-m-d')]
     ]));
+
+    function autoFillBunga() {
+        const tgl = document.getElementById('tanggal_pengajuan')?.value;
+        if (!tgl || !document.getElementById('bunga_input')?.value) return;
+        let bestKey = null;
+        let bestDate = null;
+        for (const [key, val] of Object.entries(bungaMap)) {
+            if (!val.tanggal_berlaku || val.tanggal_berlaku > tgl) continue;
+            if (!bestDate || val.tanggal_berlaku > bestDate) {
+                bestDate = val.tanggal_berlaku;
+                bestKey = key;
+            }
+        }
+        if (bestKey) {
+            document.getElementById('bunga_input').value = bestKey;
+            document.getElementById('bunga_pinjaman_id').value = bungaMap[bestKey].id;
+            document.getElementById('bunga_persen').value = bungaMap[bestKey].bunga;
+        }
+    }
 
     function formatRupiah(el) {
         const val = el.value.replace(/\./g, '').replace(/\D/g, '');
@@ -154,8 +173,8 @@
     var tglInput = document.getElementById('tanggal_pengajuan');
     var tenorSelect = document.getElementById('tenor');
     if (tglInput) {
-        tglInput.addEventListener('change', hitungJatuhTempo);
-        tglInput.addEventListener('input', hitungJatuhTempo);
+        tglInput.addEventListener('change', function() { hitungJatuhTempo(); autoFillBunga(); });
+        tglInput.addEventListener('input', function() { hitungJatuhTempo(); autoFillBunga(); });
     }
     if (tenorSelect) {
         tenorSelect.addEventListener('change', hitungJatuhTempo);

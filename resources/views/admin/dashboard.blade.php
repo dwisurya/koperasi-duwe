@@ -47,8 +47,8 @@
                 <div class="stat-card">
                     <div class="stat-icon bg-blue"><i class="bi bi-piggy-bank"></i></div>
                     <div class="stat-content">
-                        <h4>Rp {{ number_format($simpanan['sukarela'], 0, ',', '.') }}</h4>
-                        <p>{{ __('Simpanan Sukarela') }}</p>
+                        <h4>Rp {{ number_format($simpanan['penyertaan'], 0, ',', '.') }}</h4>
+                        <p>{{ __('Tabungan Penyertaan') }}</p>
                     </div>
                 </div>
             </div>
@@ -84,13 +84,13 @@
     new Chart(document.getElementById('chartSimpanan'), {
         type: 'bar',
         data: {
-            labels: ['Pokok', 'Wajib', 'Sukarela', 'Bagi Hasil', 'Pinjaman'],
+            labels: ['Pokok', 'Wajib', 'Penyertaan', 'Bagi Hasil', 'Pinjaman'],
             datasets: [{
                 label: 'Total (Rp)',
                 data: [
                     {{ $simpanan['pokok'] }},
                     {{ $simpanan['wajib'] }},
-                    {{ $simpanan['sukarela'] }},
+                    {{ $simpanan['penyertaan'] }},
                     {{ $simpanan['bagi_hasil'] }},
                     {{ $totalPinjaman }}
                 ],

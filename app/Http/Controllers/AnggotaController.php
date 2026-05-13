@@ -14,9 +14,21 @@ class AnggotaController extends Controller implements HasMiddleware
         return [
             new Middleware('permission:anggota-list|anggota-create|anggota-edit|anggota-delete', only: ['index', 'show']),
             new Middleware('permission:anggota-create', only: ['create', 'store']),
-            new Middleware('permission:anggota-edit', only: ['edit', 'update']),
+            new Middleware('permission:anggota-edit', only: ['edit', 'update', 'keluarkan', 'masukkanKembali']),
             new Middleware('permission:anggota-delete', only: ['destroy']),
         ];
+    }
+
+    public function keluarkan(Anggota $anggota)
+    {
+        $anggota->update(['tanggal_keluar' => now()]);
+        return redirect()->route('admin.anggota.show', $anggota)->with('success', 'Anggota ditandai keluar.');
+    }
+
+    public function masukkanKembali(Anggota $anggota)
+    {
+        $anggota->update(['tanggal_keluar' => null]);
+        return redirect()->route('admin.anggota.show', $anggota)->with('success', 'Anggota diaktifkan kembali.');
     }
 
     public function index()
@@ -48,15 +60,18 @@ class AnggotaController extends Controller implements HasMiddleware
         ]);
 
         $validated = $request->validate([
-            'nama' => 'required|max:255',
-            'nik' => 'nullable|max:20',
-            'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|in:L,P',
+            'nama' => 'required|max:255|unique:anggotas,nama',
+            'nik' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/|unique:anggotas,nik',
+            'no_kk' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/',
+            'alamat' => 'required|max:500',
+            'tempat_lahir' => 'required|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
             'email' => 'required|email|unique:anggotas,email',
-            'no_hp' => 'nullable|max:20',
-            'tanggal_daftar' => 'nullable|date',
-            'ayah' => 'nullable|max:100',
-            'ibu' => 'nullable|max:100',
+            'no_hp' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/|unique:anggotas,no_hp',
+            'tanggal_daftar' => 'required|date',
+            'ayah' => 'required|max:100',
+            'ibu' => 'required|max:100',
             'simpanan_pokok' => 'nullable|numeric|min:0',
         ]);
 
@@ -82,15 +97,18 @@ class AnggotaController extends Controller implements HasMiddleware
     public function update(Request $request, Anggota $anggota)
     {
         $validated = $request->validate([
-            'nama' => 'required|max:255',
-            'nik' => 'nullable|max:20',
-            'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|in:L,P',
+            'nama' => 'required|max:255|unique:anggotas,nama,'.$anggota->id,
+            'nik' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/|unique:anggotas,nik,'.$anggota->id,
+            'no_kk' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/',
+            'alamat' => 'required|max:500',
+            'tempat_lahir' => 'required|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
             'email' => 'required|email|unique:anggotas,email,'.$anggota->id,
-            'no_hp' => 'nullable|max:20',
-            'tanggal_daftar' => 'nullable|date',
-            'ayah' => 'nullable|max:100',
-            'ibu' => 'nullable|max:100',
+            'no_hp' => 'required|regex:/^[\d\s\-\+\(\)\.\/]+$/|unique:anggotas,no_hp,'.$anggota->id,
+            'tanggal_daftar' => 'required|date',
+            'ayah' => 'required|max:100',
+            'ibu' => 'required|max:100',
         ]);
 
         $anggota->update($validated);

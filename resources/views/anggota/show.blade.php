@@ -10,6 +10,8 @@
                         <tr><td class="fw-semibold" width="40%">Kode</td><td>{{ $anggota->kode }}</td></tr>
                         <tr><td class="fw-semibold">Nama</td><td>{{ $anggota->nama }}</td></tr>
                         <tr><td class="fw-semibold">NIK</td><td>{{ $anggota->nik ?? '-' }}</td></tr>
+                        <tr><td class="fw-semibold">No. KK</td><td>{{ $anggota->no_kk ?? '-' }}</td></tr>
+                        <tr><td class="fw-semibold">Tempat Lahir</td><td>{{ $anggota->tempat_lahir ?? '-' }}</td></tr>
                         <tr><td class="fw-semibold">Tgl. Lahir</td><td>{{ $anggota->tanggal_lahir?->format('d/m/Y') ?? '-' }}</td></tr>
                         <tr><td class="fw-semibold">Jenis Kelamin</td><td>{{ $anggota->jenis_kelamin === 'L' ? 'Laki-laki' : ($anggota->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}</td></tr>
                         <tr><td class="fw-semibold">Email</td><td>{{ $anggota->email }}</td></tr>
@@ -17,7 +19,31 @@
                         <tr><td class="fw-semibold">Tgl. Daftar</td><td>{{ $anggota->tanggal_daftar?->format('d/m/Y') ?? '-' }}</td></tr>
                         <tr><td class="fw-semibold">Ayah</td><td>{{ $anggota->ayah ?? '-' }}</td></tr>
                         <tr><td class="fw-semibold">Ibu</td><td>{{ $anggota->ibu ?? '-' }}</td></tr>
+                        <tr><td class="fw-semibold">Alamat</td><td>{{ $anggota->alamat ?? '-' }}</td></tr>
+                        <tr><td class="fw-semibold">Status</td><td>
+                            @if($anggota->isAktif())
+                                <span class="badge bg-success">Aktif</span>
+                            @else
+                                <span class="badge bg-danger">Keluar ({{ $anggota->tanggal_keluar->format('d/m/Y') }})</span>
+                            @endif
+                        </td></tr>
                     </table></div>
+                    <div class="mt-3 d-flex gap-2">
+                        @can('anggota-edit')
+                            <a href="{{ route('admin.anggota.edit', $anggota) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
+                            @if($anggota->isAktif())
+                                <form action="{{ route('admin.anggota.keluarkan', $anggota) }}" method="POST" class="d-inline" onsubmit="return confirm('Tandai anggota ini keluar? Simpanan Pokok dan Wajib dapat ditarik setelahnya.')">
+                                    @csrf
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-person-x"></i> Keluarkan</button>
+                                </form>
+                            @else
+                                <form action="{{ route('admin.anggota.masukkan-kembali', $anggota) }}" method="POST" class="d-inline" onsubmit="return confirm('Aktifkan kembali anggota ini?')">
+                                    @csrf
+                                    <button class="btn btn-sm btn-outline-success"><i class="bi bi-person-check"></i> Aktifkan Kembali</button>
+                                </form>
+                            @endif
+                        @endcan
+                    </div>
                 </div>
             </div>
 
@@ -28,7 +54,7 @@
                         $perJenis = $anggota->simpanan->groupBy('jenis');
                     @endphp
                     <div class="table-responsive"><table class="table table-sm">
-                        @foreach(['pokok', 'wajib', 'sukarela', 'bagi_hasil'] as $jenis)
+                        @foreach(['pokok', 'wajib', 'penyertaan', 'bagi_hasil'] as $jenis)
                             @php $sub = $perJenis->get($jenis, collect()); @endphp
                             <tr>
                                 <td class="fw-semibold">{{ \App\Models\Simpanan::jenisLabel($jenis) }}</td>

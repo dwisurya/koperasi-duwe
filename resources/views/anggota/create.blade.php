@@ -6,6 +6,16 @@
             <form action="{{ route('admin.anggota.store') }}" method="POST" id="anggotaForm">
                 @csrf
 
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Nama</label>
@@ -13,15 +23,23 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">NIK</label>
-                        <input type="text" name="nik" value="{{ old('nik') }}" class="form-control">
+                        <input type="text" name="nik" value="{{ old('nik') }}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">No. KK</label>
+                        <input type="text" name="no_kk" value="{{ old('no_kk') }}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tempat Lahir</label>
+                        <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="form-control">
+                        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" class="form-select">
+                        <select name="jenis_kelamin" class="form-select" required>
                             <option value="">- Select -</option>
                             <option value="L" {{ old('jenis_kelamin') === 'L' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="P" {{ old('jenis_kelamin') === 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -33,24 +51,28 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">No. HP</label>
-                        <input type="text" name="no_hp" value="{{ old('no_hp') }}" class="form-control">
+                        <input type="text" name="no_hp" value="{{ old('no_hp') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Tanggal Daftar</label>
-                        <input type="date" name="tanggal_daftar" value="{{ old('tanggal_daftar') }}" class="form-control">
+                        <input type="date" name="tanggal_daftar" value="{{ old('tanggal_daftar') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Ayah</label>
-                        <input type="text" name="ayah" value="{{ old('ayah') }}" class="form-control">
+                        <input type="text" name="ayah" value="{{ old('ayah') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Ibu</label>
-                        <input type="text" name="ibu" value="{{ old('ibu') }}" class="form-control">
+                        <input type="text" name="ibu" value="{{ old('ibu') }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Simpanan Pokok (Rp)</label>
                         <input type="text" name="simpanan_pokok" value="{{ old('simpanan_pokok') ? number_format((float) old('simpanan_pokok'), 0, ',', '.') : '0' }}" class="form-control rupiah-input">
                         <small class="text-muted">{{ __('Simpanan pokok awal saat pendaftaran, tidak bisa ditarik') }}</small>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Alamat</label>
+                        <textarea name="alamat" rows="2" class="form-control">{{ old('alamat') }}</textarea>
                     </div>
                 </div>
 

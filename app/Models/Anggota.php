@@ -15,11 +15,15 @@ class Anggota extends Model
         'kode',
         'nama',
         'nik',
+        'no_kk',
+        'alamat',
+        'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
         'email',
         'no_hp',
         'tanggal_daftar',
+        'tanggal_keluar',
         'ayah',
         'ibu',
     ];
@@ -29,7 +33,13 @@ class Anggota extends Model
         return [
             'tanggal_lahir' => 'date',
             'tanggal_daftar' => 'date',
+            'tanggal_keluar' => 'date',
         ];
+    }
+
+    public function isAktif(): bool
+    {
+        return $this->tanggal_keluar === null;
     }
 
     protected static function booted(): void
@@ -38,7 +48,12 @@ class Anggota extends Model
             if (! $anggota->kode) {
                 $last = static::query()->latest('id')->first();
                 $next = $last ? $last->id + 1 : 1;
-                $anggota->kode = 'AG-'.str_pad($next, 5, '0', STR_PAD_LEFT);
+                $tgl = $anggota->tanggal_daftar ? \Carbon\Carbon::parse($anggota->tanggal_daftar) : now();
+                $bulan = match ((int) $tgl->format('n')) {
+                    1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+                    7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII',
+                };
+                $anggota->kode = str_pad($next, 4, '0', STR_PAD_LEFT).'/Duwe/'.$bulan.'/'.$tgl->format('y');
             }
         });
     }

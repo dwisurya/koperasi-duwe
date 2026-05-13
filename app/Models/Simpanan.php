@@ -35,6 +35,17 @@ class Simpanan extends Model
                 $simpanan->periode_id = Periode::getActiveId();
             }
         });
+
+        static::created(function (self $simpanan) {
+            Kas::create([
+                'tanggal' => now(),
+                'jenis' => 'masuk',
+                'kategori' => $simpanan->jenis_label,
+                'nominal' => $simpanan->nominal,
+                'keterangan' => 'Setoran '.$simpanan->jenis_label.' a.n. '.($simpanan->anggota?->nama ?? '-'),
+                'periode_id' => $simpanan->periode_id,
+            ]);
+        });
     }
 
     public function anggota()
@@ -62,7 +73,7 @@ class Simpanan extends Model
         return match ($jenis) {
             'pokok' => 'Simpanan Pokok',
             'wajib' => 'Simpanan Wajib',
-            'sukarela' => 'Simpanan Sukarela',
+            'penyertaan' => 'Tabungan Penyertaan',
             'bagi_hasil' => 'Bagi Hasil',
             default => $jenis,
         };

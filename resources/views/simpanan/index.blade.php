@@ -14,7 +14,7 @@
             @endif
 
             <div class="row g-2 mb-3">
-                @foreach(['pokok' => 'Simpanan Pokok', 'wajib' => 'Simpanan Wajib', 'sukarela' => 'Simpanan Sukarela', 'bagi_hasil' => 'Bagi Hasil'] as $key => $label)
+                @foreach(['pokok' => 'Simpanan Pokok', 'wajib' => 'Simpanan Wajib', 'penyertaan' => 'Tabungan Penyertaan', 'bagi_hasil' => 'Bagi Hasil'] as $key => $label)
                     <div class="col-6 col-md-3">
                         <div class="p-2 border rounded bg-light">
                             <small class="text-muted d-block">{{ $label }}</small>

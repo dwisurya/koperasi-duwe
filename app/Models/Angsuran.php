@@ -32,6 +32,20 @@ class Angsuran extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::created(function (self $angsuran) {
+            Kas::create([
+                'tanggal' => $angsuran->tanggal_bayar,
+                'jenis' => 'masuk',
+                'kategori' => 'Angsuran',
+                'nominal' => $angsuran->nominal,
+                'keterangan' => 'Pembayaran angsuran ke-'.$angsuran->angsuran_ke.' a.n. '.($angsuran->anggota?->nama ?? '-'),
+                'periode_id' => $angsuran->pinjaman?->periode_id ?? Periode::getActiveId(),
+            ]);
+        });
+    }
+
     public function pinjaman()
     {
         return $this->belongsTo(Pinjaman::class);

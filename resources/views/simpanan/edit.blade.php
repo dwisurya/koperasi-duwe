@@ -26,7 +26,7 @@
                                 <option value="">- Select -</option>
                                 <option value="pokok" {{ old('jenis', $simpanan->jenis) === 'pokok' ? 'selected' : '' }}>Simpanan Pokok</option>
                                 <option value="wajib" {{ old('jenis', $simpanan->jenis) === 'wajib' ? 'selected' : '' }}>Simpanan Wajib</option>
-                                <option value="sukarela" {{ old('jenis', $simpanan->jenis) === 'sukarela' ? 'selected' : '' }}>Simpanan Sukarela</option>
+                                <option value="penyertaan" {{ old('jenis', $simpanan->jenis) === 'penyertaan' ? 'selected' : '' }}>Tabungan Penyertaan</option>
                                 <option value="bagi_hasil" {{ old('jenis', $simpanan->jenis) === 'bagi_hasil' ? 'selected' : '' }}>Bagi Hasil</option>
                             </select>
                         @endif

@@ -16,6 +16,10 @@
                         <input type="number" step="0.01" name="bunga" value="{{ old('bunga', $bungaPinjaman->bunga) }}" class="form-control" required>
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Tanggal Berlaku</label>
+                        <input type="date" name="tanggal_berlaku" value="{{ old('tanggal_berlaku', $bungaPinjaman->tanggal_berlaku?->format('Y-m-d')) }}" class="form-control">
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Jenis</label>
                         <select name="jenis" class="form-select">
                             <option value="">- Select -</option>

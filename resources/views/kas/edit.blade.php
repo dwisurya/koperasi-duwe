@@ -23,23 +23,48 @@
                         <label class="form-label">Kategori</label>
                         <select name="kategori" class="form-select" id="edit-kategori">
                             <option value="">- Pilih -</option>
-                            <optgroup label="Pemasukan">
+                            <optgroup label="Kas & Bank">
+                                <option value="Kas Brankas" {{ old('kategori', $kas->kategori) === 'Kas Brankas' ? 'selected' : '' }}>Kas Brankas</option>
+                                <option value="Bank BRI" {{ old('kategori', $kas->kategori) === 'Bank BRI' ? 'selected' : '' }}>Bank BRI</option>
+                                <option value="Rekening LPD" {{ old('kategori', $kas->kategori) === 'Rekening LPD' ? 'selected' : '' }}>Rekening LPD</option>
+                            </optgroup>
+                            <optgroup label="Koreksi">
+                                <option value="Koreksi Pinjaman" {{ old('kategori', $kas->kategori) === 'Koreksi Pinjaman' ? 'selected' : '' }}>Koreksi Pinjaman</option>
+                            </optgroup>
+                            <optgroup label="Simpanan (Pemasukan Anggota)">
                                 <option value="Simpanan Pokok" {{ old('kategori', $kas->kategori) === 'Simpanan Pokok' ? 'selected' : '' }}>Simpanan Pokok</option>
                                 <option value="Simpanan Wajib" {{ old('kategori', $kas->kategori) === 'Simpanan Wajib' ? 'selected' : '' }}>Simpanan Wajib</option>
                                 <option value="Simpanan Sukarela" {{ old('kategori', $kas->kategori) === 'Simpanan Sukarela' ? 'selected' : '' }}>Simpanan Sukarela</option>
                                 <option value="Bagi Hasil" {{ old('kategori', $kas->kategori) === 'Bagi Hasil' ? 'selected' : '' }}>Bagi Hasil</option>
-                                <option value="Angsuran Pinjaman" {{ old('kategori', $kas->kategori) === 'Angsuran Pinjaman' ? 'selected' : '' }}>Angsuran Pinjaman</option>
-                                <option value="Bunga Pinjaman" {{ old('kategori', $kas->kategori) === 'Bunga Pinjaman' ? 'selected' : '' }}>Bunga Pinjaman</option>
-                                <option value="Pendapatan Lain" {{ old('kategori', $kas->kategori) === 'Pendapatan Lain' ? 'selected' : '' }}>Pendapatan Lain</option>
                             </optgroup>
-                            <optgroup label="Pengeluaran">
+                            <optgroup label="Pinjaman & Angsuran">
+                                <option value="Angsuran" {{ old('kategori', $kas->kategori) === 'Angsuran' ? 'selected' : '' }}>Angsuran</option>
+                                <option value="Bunga Pinjaman" {{ old('kategori', $kas->kategori) === 'Bunga Pinjaman' ? 'selected' : '' }}>Bunga Pinjaman</option>
+                                <option value="Pinjaman" {{ old('kategori', $kas->kategori) === 'Pinjaman' ? 'selected' : '' }}>Pencairan Pinjaman</option>
+                            </optgroup>
+                            <optgroup label="Modal & Dana Eksternal">
+                                <option value="Dana Pengurus" {{ old('kategori', $kas->kategori) === 'Dana Pengurus' ? 'selected' : '' }}>Dana Pengurus</option>
+                                <option value="Dana Sosial" {{ old('kategori', $kas->kategori) === 'Dana Sosial' ? 'selected' : '' }}>Dana Sosial</option>
+                                <option value="Cadangan Modal" {{ old('kategori', $kas->kategori) === 'Cadangan Modal' ? 'selected' : '' }}>Cadangan Modal</option>
+                                <option value="Cadangan Resiko" {{ old('kategori', $kas->kategori) === 'Cadangan Resiko' ? 'selected' : '' }}>Cadangan Resiko</option>
+                                <option value="Dana Rapat" {{ old('kategori', $kas->kategori) === 'Dana Rapat' ? 'selected' : '' }}>Dana Rapat</option>
+                                <option value="SHU Periode Lalu" {{ old('kategori', $kas->kategori) === 'SHU Periode Lalu' ? 'selected' : '' }}>SHU Periode Lalu</option>
+                                <option value="Penyertaan" {{ old('kategori', $kas->kategori) === 'Penyertaan' ? 'selected' : '' }}>Penyertaan</option>
+                                <option value="Pinjam Dana Pura" {{ old('kategori', $kas->kategori) === 'Pinjam Dana Pura' ? 'selected' : '' }}>Pinjam Dana Pura</option>
+                                <option value="Pinjam SUKDUK" {{ old('kategori', $kas->kategori) === 'Pinjam SUKDUK' ? 'selected' : '' }}>Pinjam SUKDUK</option>
+                            </optgroup>
+                            <optgroup label="Operasional">
                                 <option value="Biaya Operasional" {{ old('kategori', $kas->kategori) === 'Biaya Operasional' ? 'selected' : '' }}>Biaya Operasional</option>
                                 <option value="Biaya Administrasi" {{ old('kategori', $kas->kategori) === 'Biaya Administrasi' ? 'selected' : '' }}>Biaya Administrasi</option>
-                                <option value="Pinjaman Cair" {{ old('kategori', $kas->kategori) === 'Pinjaman Cair' ? 'selected' : '' }}>Pinjaman Cair</option>
+                                <option value="Pendapatan Lain" {{ old('kategori', $kas->kategori) === 'Pendapatan Lain' ? 'selected' : '' }}>Pendapatan Lain</option>
                                 <option value="Pengeluaran Lain" {{ old('kategori', $kas->kategori) === 'Pengeluaran Lain' ? 'selected' : '' }}>Pengeluaran Lain</option>
                             </optgroup>
-                            <option value="Lainnya" {{ !in_array(old('kategori', $kas->kategori), ['Simpanan Pokok','Simpanan Wajib','Simpanan Sukarela','Bagi Hasil','Angsuran Pinjaman','Bunga Pinjaman','Pendapatan Lain','Biaya Operasional','Biaya Administrasi','Pinjaman Cair','Pengeluaran Lain']) ? 'selected' : '' }}>Lainnya</option>
+                             <option value="Lainnya" {{ !in_array(old('kategori', $kas->kategori), ['Kas Brankas','Bank BRI','Rekening LPD','Koreksi Pinjaman','Simpanan Pokok','Simpanan Wajib','Simpanan Sukarela','Bagi Hasil','Angsuran','Bunga Pinjaman','Pinjaman','Dana Pengurus','Dana Sosial','Cadangan Modal','Cadangan Resiko','Dana Rapat','SHU Periode Lalu','Penyertaan','Pinjam Dana Pura','Pinjam SUKDUK','Biaya Operasional','Biaya Administrasi','Pendapatan Lain','Pengeluaran Lain']) ? 'selected' : '' }}>Lainnya</option>
                         </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Kategori (Manual)</label>
+                        <input type="text" name="kategori_manual" value="{{ old('kategori_manual', in_array($kas->kategori, ['Kas Brankas','Bank BRI','Rekening LPD','Koreksi Pinjaman','Simpanan Pokok','Simpanan Wajib','Simpanan Sukarela','Bagi Hasil','Angsuran','Bunga Pinjaman','Pinjaman','Dana Pengurus','Dana Sosial','Cadangan Modal','Cadangan Resiko','Dana Rapat','SHU Periode Lalu','Penyertaan','Pinjam Dana Pura','Pinjam SUKDUK','Biaya Operasional','Biaya Administrasi','Pendapatan Lain','Pengeluaran Lain']) ? '' : $kas->kategori) }}" class="form-control" placeholder="Isi jika kategori 'Lainnya'">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nominal (Rp)</label>

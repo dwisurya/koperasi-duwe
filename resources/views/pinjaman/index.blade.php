@@ -6,8 +6,10 @@
             <span>{{ __('Daftar Pengajuan Pinjaman') }}</span>
             <div>
                 @can('pinjaman-create')
-                    <a href="{{ route('admin.pinjaman.simulasi') }}" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-calculator"></i> {{ __('Simulasi Cicilan') }}</a>
                     <a href="{{ route('admin.pinjaman.create') }}" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg"></i> {{ __('Pengajuan Baru') }}</a>
+                @endcan
+                @can('pinjaman-list')
+                    <a href="{{ route('admin.pinjaman.simulasi') }}" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-calculator"></i> {{ __('Simulasi Cicilan') }}</a>
                 @endcan
             </div>
         </div>

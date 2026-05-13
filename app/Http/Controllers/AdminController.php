@@ -37,7 +37,7 @@ class AdminController extends Controller
         $simpanan = [
             'pokok' => (clone $simpananQuery)->where('jenis', 'pokok')->sum('nominal'),
             'wajib' => (clone $simpananQuery)->where('jenis', 'wajib')->sum('nominal'),
-            'sukarela' => (clone $simpananQuery)->where('jenis', 'sukarela')->sum('nominal'),
+            'penyertaan' => (clone $simpananQuery)->where('jenis', 'penyertaan')->sum('nominal'),
             'bagi_hasil' => (clone $simpananQuery)->where('jenis', 'bagi_hasil')->sum('nominal'),
         ];
 

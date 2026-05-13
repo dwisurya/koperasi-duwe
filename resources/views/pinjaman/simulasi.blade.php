@@ -13,7 +13,20 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Bunga (%)</label>
-                            <input type="number" step="0.01" name="bunga" value="{{ old('bunga', $bunga ?? '') }}" class="form-control" required>
+                            <div class="mb-2">
+                                <select name="bunga_pinjaman_id" id="bunga_select" class="form-select">
+                                    <option value="">-- Pilih dari database atau isi manual --</option>
+                                    @foreach($bungaPinjaman as $bp)
+                                        <option value="{{ $bp->id }}" {{ (old('bunga_pinjaman_id', $selectedBungaId ?? '') == $bp->id) ? 'selected' : '' }}>
+                                            {{ $bp->nama }} ({{ $bp->bunga }}%)
+                                        </option>
+                                    @endforeach
+                                    <option value="custom">Lainnya (isi manual)</option>
+                                </select>
+                            </div>
+                            <div id="manual_bunga_wrapper" class="{{ $selectedBungaId ? 'd-none' : '' }}">
+                                <input type="number" step="0.01" name="bunga" id="bunga_manual" value="{{ old('bunga', $bunga ?? '') }}" class="form-control" placeholder="Masukkan bunga (%)">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tenor (Bulan)</label>
@@ -111,6 +124,25 @@
         document.querySelectorAll('.rupiah-input').forEach(function(el) {
             el.value = el.value.replace(/\./g, '');
         });
+        document.querySelector('#bunga_manual').removeAttribute('disabled');
     });
+
+    const bungaSelect = document.querySelector('#bunga_select');
+    const manualWrapper = document.querySelector('#manual_bunga_wrapper');
+    const manualInput = document.querySelector('#bunga_manual');
+
+    function toggleBungaInput() {
+        if (bungaSelect.value === 'custom' || bungaSelect.value === '') {
+            manualWrapper.classList.remove('d-none');
+            manualInput.removeAttribute('disabled');
+            if (bungaSelect.value === 'custom') manualInput.focus();
+        } else {
+            manualWrapper.classList.add('d-none');
+            manualInput.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    bungaSelect.addEventListener('change', toggleBungaInput);
+    toggleBungaInput();
 </script>
 @endpush

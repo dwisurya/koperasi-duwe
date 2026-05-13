@@ -18,7 +18,7 @@ class PinjamanController extends Controller implements HasMiddleware
             new Middleware('permission:pinjaman-create', only: ['create', 'store']),
             new Middleware('permission:pinjaman-edit', only: ['edit', 'update']),
             new Middleware('permission:pinjaman-delete', only: ['destroy']),
-            new Middleware('permission:pinjaman-approve', only: ['approve', 'reject']),
+            new Middleware('permission:pinjaman-approve', only: ['approve', 'reject', 'cairkan']),
         ];
     }
 
@@ -29,10 +29,40 @@ class PinjamanController extends Controller implements HasMiddleware
         return view('pinjaman.index', compact('pinjaman'));
     }
 
+    public function pengajuan()
+    {
+        $pinjaman = Pinjaman::with(['anggota', 'bungaPinjaman', 'approver', 'periode'])
+            ->where('status', 'diajukan')
+            ->latest()
+            ->get();
+
+        return view('pinjaman.pengajuan', compact('pinjaman'));
+    }
+
+    public function approval()
+    {
+        $pinjaman = Pinjaman::with(['anggota', 'bungaPinjaman', 'approver', 'periode'])
+            ->where('status', 'diajukan')
+            ->latest()
+            ->get();
+
+        return view('pinjaman.approval', compact('pinjaman'));
+    }
+
+    public function pencairan()
+    {
+        $pinjaman = Pinjaman::with(['anggota', 'bungaPinjaman', 'approver', 'periode'])
+            ->where('status', 'disetujui')
+            ->latest()
+            ->get();
+
+        return view('pinjaman.pencairan', compact('pinjaman'));
+    }
+
     public function create()
     {
         $anggotas = Anggota::orderBy('nama')->get();
-        $bungaPinjaman = BungaPinjaman::where('is_active', true)->orderBy('nama')->get();
+        $bungaPinjaman = BungaPinjaman::where('is_active', true)->orderBy('tanggal_berlaku', 'desc')->get();
 
         return view('pinjaman.create', compact('anggotas', 'bungaPinjaman'));
     }
@@ -72,6 +102,15 @@ class PinjamanController extends Controller implements HasMiddleware
         $display = $request->input('bunga_display', '');
 
         if (empty($display)) {
+            if ($request->filled('tanggal_pengajuan')) {
+                $rate = BungaPinjaman::getRateByDate($request->tanggal_pengajuan);
+                if ($rate) {
+                    $request->merge([
+                        'bunga_pinjaman_id' => $rate->id,
+                        'bunga_persen' => $rate->bunga,
+                    ]);
+                }
+            }
             return;
         }
 
@@ -97,7 +136,7 @@ class PinjamanController extends Controller implements HasMiddleware
     public function edit(Pinjaman $pinjaman)
     {
         $anggotas = Anggota::orderBy('nama')->get();
-        $bungaPinjaman = BungaPinjaman::where('is_active', true)->orderBy('nama')->get();
+        $bungaPinjaman = BungaPinjaman::where('is_active', true)->orderBy('tanggal_berlaku', 'desc')->get();
 
         return view('pinjaman.edit', compact('pinjaman', 'anggotas', 'bungaPinjaman'));
     }
@@ -169,11 +208,37 @@ class PinjamanController extends Controller implements HasMiddleware
         return redirect()->route('admin.pinjaman.index')->with('success', __('Pengajuan pinjaman ditolak.'));
     }
 
+    public function cairkan(Pinjaman $pinjaman)
+    {
+        if ($pinjaman->status !== 'disetujui') {
+            return back()->with('error', __('Hanya pinjaman yang sudah disetujui yang bisa dicairkan.'));
+        }
+
+        $pinjaman->update(['status' => 'aktif']);
+
+        return redirect()->route('admin.pinjaman.pencairan')->with('success', __('Pinjaman berhasil dicairkan.'));
+    }
+
     public function simulasi(Request $request)
     {
+        $bungaPinjaman = BungaPinjaman::aktif()->orderBy('tanggal_berlaku', 'desc')->get();
+
         $nominal = $request->filled('nominal') ? (float) $request->nominal : null;
-        $bunga = $request->filled('bunga') ? (float) $request->bunga : null;
         $tenor = $request->filled('tenor') ? (int) $request->tenor : null;
+
+        $selectedBungaId = $request->filled('bunga_pinjaman_id') ? (int) $request->bunga_pinjaman_id : null;
+        $bunga = null;
+
+        if ($selectedBungaId) {
+            $rate = $bungaPinjaman->firstWhere('id', $selectedBungaId);
+            if ($rate) {
+                $bunga = (float) $rate->bunga;
+            }
+        }
+
+        if ($bunga === null && $request->filled('bunga')) {
+            $bunga = (float) $request->bunga;
+        }
 
         $detail = null;
         $cicilanPerBulan = null;
@@ -181,11 +246,14 @@ class PinjamanController extends Controller implements HasMiddleware
         $totalBayar = null;
 
         if ($nominal && $bunga && $tenor) {
-            $request->validate([
+            $rules = [
                 'nominal' => 'required|numeric|min:0',
-                'bunga' => 'required|numeric|min:0|max:999.99',
                 'tenor' => 'required|integer|min:1',
-            ]);
+            ];
+            if (! $selectedBungaId) {
+                $rules['bunga'] = 'required|numeric|min:0|max:999.99';
+            }
+            $request->validate($rules);
 
             $bungaPerBulan = ($nominal * ($bunga / 100)) / 12;
             $cicilanPokok = $nominal / $tenor;
@@ -216,7 +284,7 @@ class PinjamanController extends Controller implements HasMiddleware
         }
 
         return view('pinjaman.simulasi', compact(
-            'nominal', 'bunga', 'tenor',
+            'bungaPinjaman', 'nominal', 'bunga', 'tenor', 'selectedBungaId',
             'cicilanPerBulan', 'totalBunga', 'totalBayar', 'detail'
         ));
     }

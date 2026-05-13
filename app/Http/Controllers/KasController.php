@@ -40,10 +40,16 @@ class KasController extends Controller implements HasMiddleware
             'tanggal' => 'required|date',
             'jenis' => 'required|in:masuk,keluar',
             'kategori' => 'required|max:255',
+            'kategori_manual' => 'nullable|max:255',
             'nominal' => 'required|numeric|min:0',
             'keterangan' => 'nullable|max:1000',
             'periode_id' => 'nullable|exists:periodes,id',
         ]);
+
+        if ($validated['kategori'] === 'Lainnya' && ! empty($validated['kategori_manual'])) {
+            $validated['kategori'] = $validated['kategori_manual'];
+        }
+        unset($validated['kategori_manual']);
 
         Kas::create($validated);
 
@@ -61,10 +67,16 @@ class KasController extends Controller implements HasMiddleware
             'tanggal' => 'required|date',
             'jenis' => 'required|in:masuk,keluar',
             'kategori' => 'required|max:255',
+            'kategori_manual' => 'nullable|max:255',
             'nominal' => 'required|numeric|min:0',
             'keterangan' => 'nullable|max:1000',
             'periode_id' => 'nullable|exists:periodes,id',
         ]);
+
+        if ($validated['kategori'] === 'Lainnya' && ! empty($validated['kategori_manual'])) {
+            $validated['kategori'] = $validated['kategori_manual'];
+        }
+        unset($validated['kategori_manual']);
 
         $kas->update($validated);
 

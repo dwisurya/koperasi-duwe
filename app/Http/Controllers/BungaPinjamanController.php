@@ -36,6 +36,7 @@ class BungaPinjamanController extends Controller implements HasMiddleware
         $validated = $request->validate([
             'nama' => 'required|max:255',
             'bunga' => 'required|numeric|min:0|max:999.99',
+            'tanggal_berlaku' => 'nullable|date',
             'jenis' => 'nullable|max:50',
             'keterangan' => 'nullable|max:500',
             'is_active' => 'boolean',
@@ -56,6 +57,7 @@ class BungaPinjamanController extends Controller implements HasMiddleware
         $validated = $request->validate([
             'nama' => 'required|max:255',
             'bunga' => 'required|numeric|min:0|max:999.99',
+            'tanggal_berlaku' => 'nullable|date',
             'jenis' => 'nullable|max:50',
             'keterangan' => 'nullable|max:500',
             'is_active' => 'boolean',

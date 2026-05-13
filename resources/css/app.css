@@ -127,6 +127,54 @@ body {
     background: var(--sidebar-hover);
 }
 
+.sidebar .sub-menu .nav-sub > a {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem 1.2rem .5rem 3.2rem;
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.sidebar .sub-menu .nav-sub > a:hover {
+    color: #fff;
+    background: var(--sidebar-hover);
+}
+
+.sidebar .sub-menu .nav-sub > a .arrow {
+    margin-left: auto;
+    transition: transform .2s;
+    font-size: .75rem;
+}
+
+.sidebar .sub-menu .nav-sub > a .arrow.open {
+    transform: rotate(90deg);
+}
+
+.sidebar .sub-sub-menu {
+    list-style: none;
+    padding: 0;
+    background: rgba(0,0,0,.1);
+}
+
+.sidebar .sub-sub-menu a {
+    display: block;
+    padding: .4rem 1.2rem .4rem 4rem;
+    color: rgba(255,255,255,.45);
+    text-decoration: none;
+    font-size: .82rem;
+    transition: all .15s;
+}
+
+.sidebar .sub-sub-menu a:hover,
+.sidebar .sub-sub-menu a.active {
+    color: #fff;
+    background: var(--sidebar-hover);
+}
+
 /* Main Content */
 .main-content {
     margin-left: var(--sidebar-width);

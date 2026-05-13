@@ -23,19 +23,40 @@
                         <label class="form-label">Kategori</label>
                         <select name="kategori" class="form-select" required>
                             <option value="">- Pilih -</option>
-                            <optgroup label="Pemasukan">
+                            <optgroup label="Kas & Bank">
+                                <option value="Kas Brankas" {{ old('kategori') === 'Kas Brankas' ? 'selected' : '' }}>Kas Brankas</option>
+                                <option value="Bank BRI" {{ old('kategori') === 'Bank BRI' ? 'selected' : '' }}>Bank BRI</option>
+                                <option value="Rekening LPD" {{ old('kategori') === 'Rekening LPD' ? 'selected' : '' }}>Rekening LPD</option>
+                            </optgroup>
+                            <optgroup label="Koreksi">
+                                <option value="Koreksi Pinjaman" {{ old('kategori') === 'Koreksi Pinjaman' ? 'selected' : '' }}>Koreksi Pinjaman</option>
+                            </optgroup>
+                            <optgroup label="Simpanan (Pemasukan Anggota)">
                                 <option value="Simpanan Pokok" {{ old('kategori') === 'Simpanan Pokok' ? 'selected' : '' }}>Simpanan Pokok</option>
                                 <option value="Simpanan Wajib" {{ old('kategori') === 'Simpanan Wajib' ? 'selected' : '' }}>Simpanan Wajib</option>
                                 <option value="Simpanan Sukarela" {{ old('kategori') === 'Simpanan Sukarela' ? 'selected' : '' }}>Simpanan Sukarela</option>
                                 <option value="Bagi Hasil" {{ old('kategori') === 'Bagi Hasil' ? 'selected' : '' }}>Bagi Hasil</option>
-                                <option value="Angsuran Pinjaman" {{ old('kategori') === 'Angsuran Pinjaman' ? 'selected' : '' }}>Angsuran Pinjaman</option>
-                                <option value="Bunga Pinjaman" {{ old('kategori') === 'Bunga Pinjaman' ? 'selected' : '' }}>Bunga Pinjaman</option>
-                                <option value="Pendapatan Lain" {{ old('kategori') === 'Pendapatan Lain' ? 'selected' : '' }}>Pendapatan Lain</option>
                             </optgroup>
-                            <optgroup label="Pengeluaran">
+                            <optgroup label="Pinjaman & Angsuran">
+                                <option value="Angsuran" {{ old('kategori') === 'Angsuran' ? 'selected' : '' }}>Angsuran</option>
+                                <option value="Bunga Pinjaman" {{ old('kategori') === 'Bunga Pinjaman' ? 'selected' : '' }}>Bunga Pinjaman</option>
+                                <option value="Pinjaman" {{ old('kategori') === 'Pinjaman' ? 'selected' : '' }}>Pencairan Pinjaman</option>
+                            </optgroup>
+                            <optgroup label="Modal & Dana Eksternal">
+                                <option value="Dana Pengurus" {{ old('kategori') === 'Dana Pengurus' ? 'selected' : '' }}>Dana Pengurus</option>
+                                <option value="Dana Sosial" {{ old('kategori') === 'Dana Sosial' ? 'selected' : '' }}>Dana Sosial</option>
+                                <option value="Cadangan Modal" {{ old('kategori') === 'Cadangan Modal' ? 'selected' : '' }}>Cadangan Modal</option>
+                                <option value="Cadangan Resiko" {{ old('kategori') === 'Cadangan Resiko' ? 'selected' : '' }}>Cadangan Resiko</option>
+                                <option value="Dana Rapat" {{ old('kategori') === 'Dana Rapat' ? 'selected' : '' }}>Dana Rapat</option>
+                                <option value="SHU Periode Lalu" {{ old('kategori') === 'SHU Periode Lalu' ? 'selected' : '' }}>SHU Periode Lalu</option>
+                                <option value="Penyertaan" {{ old('kategori') === 'Penyertaan' ? 'selected' : '' }}>Penyertaan</option>
+                                <option value="Pinjam Dana Pura" {{ old('kategori') === 'Pinjam Dana Pura' ? 'selected' : '' }}>Pinjam Dana Pura</option>
+                                <option value="Pinjam SUKDUK" {{ old('kategori') === 'Pinjam SUKDUK' ? 'selected' : '' }}>Pinjam SUKDUK</option>
+                            </optgroup>
+                            <optgroup label="Operasional">
                                 <option value="Biaya Operasional" {{ old('kategori') === 'Biaya Operasional' ? 'selected' : '' }}>Biaya Operasional</option>
                                 <option value="Biaya Administrasi" {{ old('kategori') === 'Biaya Administrasi' ? 'selected' : '' }}>Biaya Administrasi</option>
-                                <option value="Pinjaman Cair" {{ old('kategori') === 'Pinjaman Cair' ? 'selected' : '' }}>Pinjaman Cair</option>
+                                <option value="Pendapatan Lain" {{ old('kategori') === 'Pendapatan Lain' ? 'selected' : '' }}>Pendapatan Lain</option>
                                 <option value="Pengeluaran Lain" {{ old('kategori') === 'Pengeluaran Lain' ? 'selected' : '' }}>Pengeluaran Lain</option>
                             </optgroup>
                             <option value="Lainnya" {{ old('kategori') === 'Lainnya' ? 'selected' : '' }}>Lainnya (isi manual)</option>

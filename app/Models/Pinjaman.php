@@ -57,6 +57,19 @@ class Pinjaman extends Model
                 $pinjaman->jatuh_tempo = $pinjaman->tanggal_pengajuan->addMonths($pinjaman->tenor);
             }
         });
+
+        static::updated(function (self $pinjaman) {
+            if ($pinjaman->wasChanged('status') && $pinjaman->status === 'aktif') {
+                Kas::create([
+                    'tanggal' => now(),
+                    'jenis' => 'keluar',
+                    'kategori' => 'Pinjaman',
+                    'nominal' => $pinjaman->nominal,
+                    'keterangan' => 'Pencairan pinjaman a.n. '.($pinjaman->anggota?->nama ?? '-'),
+                    'periode_id' => $pinjaman->periode_id,
+                ]);
+            }
+        });
     }
 
     public function anggota()
